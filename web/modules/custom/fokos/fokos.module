@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\node\Entity\Node;
+use Drupal\Core\Datetime\DrupalDateTime;
 
 /**
  * Hook per alterare il suggerimento del titolo della pagina.
@@ -23,14 +24,22 @@ function fokos_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_sta
         'node_entrate_uscite_form', 'node_entrate_uscite_edit_form',
         'node_soggiorno_form', 'node_soggiorno_edit_form',
     ];
+
     if (in_array($form_id, $forms_da_modificare, true)) {
         $form['title']['#access'] = FALSE;
     }
     
-    $forms_da_validare = ['node_entrate_uscite_form', 'node_entrate_uscite_edit_form'];
+    $forms_da_validare = ['node_entrate_uscite_form'];
     if (in_array($form_id, $forms_da_validare, true)) {
         $form['#validate'][] = 'fokos_ospite_validazione';
     }
+
+    // Non editabili in fase di update
+    if ($form_id === 'node_entrate_uscite_edit_form') {
+        $form['field_ref_struttura']['#disabled'] = TRUE;
+        $form['field_ref_ospite']['#disabled'] = TRUE;
+    }
+    
 }
 
 /**
@@ -73,7 +82,7 @@ function fokos_process_entrata_uscita(Node $node) {
         fokos_crea_soggiorno_giornaliero($node, $data_in);
     }
     
-    $node->setTitle("OSP$ospite_id-STR$struttura_id-$data_in");
+    $node->setTitle("Entrata/Uscita OSP$ospite_id STR$struttura_id $data_in");
 }
 
 /**
@@ -139,3 +148,159 @@ function fokos_ospite_gia_assegnato($ospite_id) {
         ->range(0, 1);
     return !empty($query->execute());
 }
+
+
+
+
+
+function fokos_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
+    if ($entity instanceof \Drupal\node\Entity\Node && $entity->bundle() === 'entrate_uscite') {
+        genera_soggiorni($entity);
+    }
+}
+
+
+/**
+ * Genera nodi Soggiorno per ogni giorno tra entrata e uscita.
+ *
+ * @param \Drupal\node\Entity\Node $entrata_uscita
+ *   Il nodo di tipo "entrate_uscite".
+ */
+function genera_soggiorni(Node $entrata_uscita) {
+    if ($entrata_uscita->bundle() !== 'entrate_uscite') {
+        \Drupal::logger('fokos')->warning('Nodo non valido passato a genera_soggiorni.');
+        return;
+    }
+
+    // Prende la data di entrata e converte in DateTime standard
+    $data_in = new DrupalDateTime($entrata_uscita->get('field_eo_data_in')->value);
+    $data_in = $data_in->getPhpDateTime();
+
+    // Prende la data di uscita, se non c'è usa la data odierna e converte in DateTime standard
+    $data_out = $entrata_uscita->get('field_eo_data_out')->value 
+        ? new DrupalDateTime($entrata_uscita->get('field_eo_data_out')->value)
+        : new DrupalDateTime();
+    $data_out = $data_out->getPhpDateTime();
+
+    // Prende i riferimenti
+    $ospite_id = $entrata_uscita->get('field_ref_ospite')->target_id;
+    $struttura_id = $entrata_uscita->get('field_ref_struttura')->target_id;
+    $tariffa_id = $entrata_uscita->get('field_ref_tariffa')->target_id;
+
+    // Itera su ogni giorno tra entrata e uscita, includendo l'ultimo giorno
+    $period = new \DatePeriod(
+        $data_in,
+        new \DateInterval('P1D'),
+        $data_out,
+        \DatePeriod::INCLUDE_END_DATE // PHP 8+: include il giorno di uscita
+    );
+
+    foreach ($period as $date) {
+        $giorno = $date->format('Y-m-d');
+
+        // Controlla se esiste già un nodo Soggiorno per questa data e questa entrata_uscita
+        $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery()
+            ->condition('type', 'soggiorno')
+            ->condition('field_ref_entrata_uscita', $entrata_uscita->id())
+            ->condition('field_sog_data', $giorno)
+            ->accessCheck(FALSE);
+        $soggiorni = $query->execute();
+
+        if (empty($soggiorni)) {
+            // Crea il nodo soggiorno se non esiste
+            fokos_crea_soggiorno_giornaliero($entrata_uscita, $giorno);
+            \Drupal::logger('fokos')->notice("Creato nodo soggiorno per il giorno $giorno, entrata_uscita: " . $entrata_uscita->id());
+        }
+    }
+}
+
+
+
+
+function fokos_entity_presave(\Drupal\Core\Entity\EntityInterface $entity) {
+    if ($entity instanceof Node && $entity->bundle() === 'entrate_uscite') {
+        // Recupera i valori precedenti prima della modifica
+        $original = $entity->original ?? NULL;
+        if ($original) {
+            $old_data_in = new DrupalDateTime($original->get('field_eo_data_in')->value);
+            $old_data_out = $original->get('field_eo_data_out')->isEmpty() ? new DrupalDateTime() : new DrupalDateTime($original->get('field_eo_data_out')->value);
+
+            $new_data_in = new DrupalDateTime($entity->get('field_eo_data_in')->value);
+            $new_data_out = $entity->get('field_eo_data_out')->isEmpty() ? new DrupalDateTime() : new DrupalDateTime($entity->get('field_eo_data_out')->value);
+
+            $old_tariffa = $original->get('field_ref_tariffa')->target_id;
+            $new_tariffa = $entity->get('field_ref_tariffa')->target_id;
+
+            if ($old_data_in->format('Y-m-d') !== $new_data_in->format('Y-m-d') || 
+                $old_data_out->format('Y-m-d') !== $new_data_out->format('Y-m-d')) {
+                sincronizza_soggiorni($entity, $old_data_in, $old_data_out, $new_data_in, $new_data_out);
+            }
+
+            // Se è cambiata la tariffa, aggiorniamo solo quel campo
+            if ($old_tariffa !== $new_tariffa) {
+                $entity->set('field_ref_tariffa', $new_tariffa);
+            }
+
+        }
+    }
+}
+
+function sincronizza_soggiorni($entrata_uscita, $old_data_in, $old_data_out, $new_data_in, $new_data_out) {
+
+    // Converti le date in oggetti DateTime
+    $old_data_in = ($old_data_in instanceof \Drupal\Core\Datetime\DrupalDateTime) ? $old_data_in->getPhpDateTime() : $old_data_in;
+    $old_data_out = ($old_data_out instanceof \Drupal\Core\Datetime\DrupalDateTime) ? $old_data_out->getPhpDateTime() : $old_data_out;
+    $new_data_in = ($new_data_in instanceof \Drupal\Core\Datetime\DrupalDateTime) ? $new_data_in->getPhpDateTime() : $new_data_in;
+    $new_data_out = ($new_data_out instanceof \Drupal\Core\Datetime\DrupalDateTime) ? $new_data_out->getPhpDateTime() : $new_data_out;
+
+
+    // Controllo che le date siano oggetti DateTime validi
+    if (!($old_data_in instanceof \DateTimeInterface) || !($old_data_out instanceof \DateTimeInterface) ||
+        !($new_data_in instanceof \DateTimeInterface) || !($new_data_out instanceof \DateTimeInterface)) {
+        throw new \Exception("Errore: Le date fornite non sono valide.");
+    }
+
+    // Caso 1: Se l'intervallo si è accorciato → Eliminare soggiorni superflui
+    if ($new_data_in > $old_data_in) {
+        for ($date = clone $old_data_in; $date < $new_data_in; $date->modify('+1 day')) {
+            elimina_soggiorni($entrata_uscita, $date->format('Y-m-d'), $date->format('Y-m-d'));
+        }
+    }
+    if ($new_data_out < $old_data_out) {
+        for ($date = clone $new_data_out; $date < $old_data_out; $date->modify('+1 day')) {
+            elimina_soggiorni($entrata_uscita, $date->format('Y-m-d'), $date->format('Y-m-d'));
+        }
+    }
+
+    // Caso 2: Se l'intervallo si è allungato → Aggiungere soggiorni mancanti
+    if ($new_data_in < $old_data_in) {
+        for ($date = clone $new_data_in; $date < $old_data_in; $date->modify('+1 day')) {
+            fokos_crea_soggiorno_giornaliero($entrata_uscita, $date->format('Y-m-d'));
+        }
+    }
+    if ($new_data_out > $old_data_out) {
+        for ($date = clone $old_data_out; $date < $new_data_out; $date->modify('+1 day')) {
+            fokos_crea_soggiorno_giornaliero($entrata_uscita, $date->format('Y-m-d'));
+        }
+    }
+}
+
+
+
+
+function elimina_soggiorni($entrata_uscita, $start_date, $end_date) {
+    $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
+    $query->condition('type', 'soggiorno')
+          ->accessCheck(FALSE) 
+          ->condition('field_ref_entrata_uscita', $entrata_uscita->id())
+          ->condition('field_sog_data', [$start_date, $end_date], 'BETWEEN');
+    
+    $soggiorni_ids = $query->execute();
+    if (!empty($soggiorni_ids)) {
+        $soggiorni = Node::loadMultiple($soggiorni_ids);
+        foreach ($soggiorni as $soggiorno) {
+            $soggiorno->delete();
+        }
+    }
+}
+
