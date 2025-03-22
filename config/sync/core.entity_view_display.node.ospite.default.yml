@@ -1,0 +1,54 @@
+uuid: 26f35557-83b3-43f8-a0ae-9dd4e9cf302e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.ospite.field_osp_cf
+    - field.field.node.ospite.field_osp_cognome
+    - field.field.node.ospite.field_osp_data_nascita
+    - field.field.node.ospite.field_osp_nome
+    - node.type.ospite
+  module:
+    - datetime
+    - user
+id: node.ospite.default
+targetEntityType: node
+bundle: ospite
+mode: default
+content:
+  field_osp_cf:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_osp_cognome:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_osp_data_nascita:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_osp_nome:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true
+  links: true

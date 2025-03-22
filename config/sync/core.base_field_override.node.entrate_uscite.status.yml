@@ -1,0 +1,22 @@
+uuid: c10db90f-92ab-4b1b-b960-1ef49b16bb4e
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.entrate_uscite
+id: node.entrate_uscite.status
+field_name: status
+entity_type: node
+bundle: entrate_uscite
+label: Pubblicato
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

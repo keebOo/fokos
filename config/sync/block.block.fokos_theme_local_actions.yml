@@ -1,0 +1,20 @@
+uuid: 45558466-904f-453e-97d4-a26abe65d5b7
+langcode: it
+status: true
+dependencies:
+  theme:
+    - fokos_theme
+_core:
+  default_config_hash: OQ9aJ-4qVwK1x00o9EOYK4eFDjQr_HLpbPiJaPSVZiQ
+id: fokos_theme_local_actions
+theme: fokos_theme
+region: content
+weight: -10
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Azioni di amministrazione principali'
+  label_display: '0'
+  provider: core
+visibility: {  }

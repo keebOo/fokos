@@ -1,0 +1,58 @@
+uuid: 76341e1b-d865-4be3-a745-90e1b7f3cb98
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.soggiorno.field_ref_ospite
+    - field.field.node.soggiorno.field_ref_struttura
+    - field.field.node.soggiorno.field_ref_tariffa
+    - field.field.node.soggiorno.field_sog_data
+    - node.type.soggiorno
+  module:
+    - datetime
+    - user
+id: node.soggiorno.default
+targetEntityType: node
+bundle: soggiorno
+mode: default
+content:
+  field_ref_ospite:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  field_ref_struttura:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_ref_tariffa:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 106
+    region: content
+  field_sog_data:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 105
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

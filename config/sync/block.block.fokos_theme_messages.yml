@@ -1,0 +1,22 @@
+uuid: 8d8afb1b-db54-4873-807c-b317270e6abd
+langcode: it
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - fokos_theme
+_core:
+  default_config_hash: WvPhI8OwllG0gE69-F8qL3ai3nd5SbYD6JpmEuZcyok
+id: fokos_theme_messages
+theme: fokos_theme
+region: header
+weight: 0
+provider: null
+plugin: system_messages_block
+settings:
+  id: system_messages_block
+  label: 'Messaggi di stato'
+  label_display: '0'
+  provider: system
+visibility: {  }

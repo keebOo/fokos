@@ -1,0 +1,5 @@
+# fokos_node_view:
+#   version: 1.x
+#   css:
+#     theme:
+#       css/fokos-node-view.css: {}

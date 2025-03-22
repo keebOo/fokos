@@ -1,0 +1,10 @@
+status: 0
+pattern: 'OSP[node:field_ref_ospite:target_id]_STR[node:field_ref_struttura:entity:nid]_[node:field_eo_data_in:value]'
+escape: true
+preserve_titles: false
+save: false
+chunk: 50
+dependencies:
+  config:
+    - node.type.entrate_uscite
+new_content_behavior: 0

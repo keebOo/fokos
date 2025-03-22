@@ -1,0 +1,17 @@
+uuid: bfeb59c8-a9ff-4bf5-b131-82d0a68b1a60
+langcode: it
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Soggiorno
+type: soggiorno
+description: 'Registra i singoli giorni di presenza/assenza di un ospite in struttura.'
+help: null
+new_revision: false
+preview_mode: 0
+display_submitted: false

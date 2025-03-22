@@ -1,0 +1,15 @@
+_core:
+  default_config_hash: ijfbzDTN4CbE7Sr-6ubWzy_t1vH4OtU1doNCLssVz-4
+langcode: it
+uuid: 0ad724fb-965e-486f-8b4f-3217d2206d65
+name: fokOs
+mail: me@alessandrofontana.com
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /node
+admin_compact_mode: false
+weight_select_max: 100
+default_langcode: it
+mail_notification: null

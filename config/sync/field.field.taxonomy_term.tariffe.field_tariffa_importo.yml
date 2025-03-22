@@ -1,0 +1,25 @@
+uuid: fcf4d565-9950-49a2-8755-6c334bbe42cb
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_tariffa_importo
+    - taxonomy.vocabulary.tariffe
+id: taxonomy_term.tariffe.field_tariffa_importo
+field_name: field_tariffa_importo
+entity_type: taxonomy_term
+bundle: tariffe
+label: Importo
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0.0
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: null
+  prefix: €
+  suffix: ''
+field_type: decimal

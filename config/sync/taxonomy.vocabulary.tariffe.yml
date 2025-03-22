@@ -1,0 +1,9 @@
+uuid: 4e234b55-026a-4708-bac3-b95b915446b5
+langcode: it
+status: true
+dependencies: {  }
+name: Tariffe
+vid: tariffe
+description: null
+weight: 0
+new_revision: false

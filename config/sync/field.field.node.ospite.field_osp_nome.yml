@@ -1,0 +1,19 @@
+uuid: d935dfa3-2bfc-480f-b9bd-d2cfbbe2b8aa
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_osp_nome
+    - node.type.ospite
+id: node.ospite.field_osp_nome
+field_name: field_osp_nome
+entity_type: node
+bundle: ospite
+label: Nome
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

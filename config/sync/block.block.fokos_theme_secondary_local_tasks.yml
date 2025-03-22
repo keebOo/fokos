@@ -1,0 +1,22 @@
+uuid: 99da3e14-fa14-4e7c-b0f6-3bc11ec2197d
+langcode: it
+status: true
+dependencies:
+  theme:
+    - fokos_theme
+_core:
+  default_config_hash: BCWhood0xXFQYqxFgL1spXdb9KeIuXH1YvTdjIEedDg
+id: fokos_theme_secondary_local_tasks
+theme: fokos_theme
+region: header
+weight: 0
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Schede secondarie'
+  label_display: '0'
+  provider: core
+  primary: false
+  secondary: true
+visibility: {  }

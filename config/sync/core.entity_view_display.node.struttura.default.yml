@@ -1,0 +1,30 @@
+uuid: ce3e0401-f33c-47c7-b270-56171cdf1a62
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.struttura.field_refs_ospite
+    - node.type.struttura
+  module:
+    - user
+id: node.struttura.default
+targetEntityType: node
+bundle: struttura
+mode: default
+content:
+  field_refs_ospite:
+    type: entity_reference_entity_view
+    label: above
+    settings:
+      view_mode: teaser
+      link: false
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

@@ -1,0 +1,25 @@
+uuid: 10c210c4-7879-4a5b-a279-4266aa3a8679
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_ref_ospite
+    - node.type.entrate_uscite
+id: node.entrate_uscite.field_ref_ospite
+field_name: field_ref_ospite
+entity_type: node
+bundle: entrate_uscite
+label: Ospite
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: views
+  handler_settings:
+    view:
+      view_name: reference_views
+      display_name: entity_reference_1
+      arguments: {  }
+field_type: entity_reference

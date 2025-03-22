@@ -1,0 +1,21 @@
+uuid: 9588825f-a32f-4332-86d8-34b2118af30d
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_eo_data_out
+    - node.type.entrate_uscite
+  module:
+    - datetime
+id: node.entrate_uscite.field_eo_data_out
+field_name: field_eo_data_out
+entity_type: node
+bundle: entrate_uscite
+label: 'Data dimissione'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

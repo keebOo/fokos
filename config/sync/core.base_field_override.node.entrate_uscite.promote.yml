@@ -1,0 +1,22 @@
+uuid: 399d20a4-116c-494d-bed1-6c0026488f52
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.entrate_uscite
+id: node.entrate_uscite.promote
+field_name: promote
+entity_type: node
+bundle: entrate_uscite
+label: 'Promosso alla prima pagina'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

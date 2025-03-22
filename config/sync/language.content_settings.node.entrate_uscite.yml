@@ -1,0 +1,11 @@
+uuid: b7d576e8-9167-409c-8981-a6a78640fe73
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.entrate_uscite
+id: node.entrate_uscite
+target_entity_type_id: node
+target_bundle: entrate_uscite
+default_langcode: site_default
+language_alterable: false

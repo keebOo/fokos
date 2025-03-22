@@ -1,0 +1,13 @@
+uuid: d296430c-3834-4d35-879e-d48170b7fb2e
+langcode: it
+status: false
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: r_A0T3aTqGDwLyvoH7wLps-0PM--RHlS8UsiJe_Ac64
+id: node.search_index
+label: 'Indice di ricerca'
+description: ''
+targetEntityType: node
+cache: true

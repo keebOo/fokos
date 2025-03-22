@@ -1,0 +1,11 @@
+uuid: 30a8d21e-aef2-4d33-abb4-7c72b651e9f3
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.ospite
+id: node.ospite
+target_entity_type_id: node
+target_bundle: ospite
+default_langcode: site_default
+language_alterable: false

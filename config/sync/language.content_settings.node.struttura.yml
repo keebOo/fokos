@@ -1,0 +1,11 @@
+uuid: 95d303cc-4ad1-4983-8462-89f5699f9f54
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.struttura
+id: node.struttura
+target_entity_type_id: node
+target_bundle: struttura
+default_langcode: site_default
+language_alterable: false

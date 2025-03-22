@@ -1,0 +1,20 @@
+uuid: 7ce9fc5e-ef14-42c3-adca-32920ff9f7d9
+langcode: it
+status: true
+dependencies:
+  module:
+    - datetime
+    - node
+id: node.field_eo_data_out
+field_name: field_eo_data_out
+entity_type: node
+type: datetime
+settings:
+  datetime_type: date
+module: datetime
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

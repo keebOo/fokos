@@ -1,0 +1,29 @@
+uuid: a913fe55-0cc6-4885-90ab-397176be3dce
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_refs_ospite
+    - node.type.ospite
+    - node.type.struttura
+id: node.struttura.field_refs_ospite
+field_name: field_refs_ospite
+entity_type: node
+bundle: struttura
+label: Ospite
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      ospite: ospite
+    sort:
+      field: field_osp_cognome
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

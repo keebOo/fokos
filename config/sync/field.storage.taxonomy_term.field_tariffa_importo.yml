@@ -1,0 +1,20 @@
+uuid: 6f9fe803-1028-4277-911e-c792bc441ee7
+langcode: it
+status: true
+dependencies:
+  module:
+    - taxonomy
+id: taxonomy_term.field_tariffa_importo
+field_name: field_tariffa_importo
+entity_type: taxonomy_term
+type: decimal
+settings:
+  precision: 10
+  scale: 2
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

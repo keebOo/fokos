@@ -1,0 +1,17 @@
+uuid: f3cd1062-2551-4bd0-b843-3cf61a433380
+langcode: it
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Ospite
+type: ospite
+description: 'Persona fisica.'
+help: null
+new_revision: false
+preview_mode: 0
+display_submitted: true

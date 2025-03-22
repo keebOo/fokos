@@ -1,0 +1,29 @@
+uuid: ae2b4705-a7da-4b49-93dd-ed88275a0ca9
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_ref_tariffa
+    - node.type.soggiorno
+    - taxonomy.vocabulary.tariffe
+id: node.soggiorno.field_ref_tariffa
+field_name: field_ref_tariffa
+entity_type: node
+bundle: soggiorno
+label: Tariffa
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      tariffe: tariffe
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

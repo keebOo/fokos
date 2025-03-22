@@ -1,0 +1,21 @@
+uuid: ab825b11-ebd9-4650-b9bc-f9d2988e660e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_osp_data_nascita
+    - node.type.ospite
+  module:
+    - datetime
+id: node.ospite.field_osp_data_nascita
+field_name: field_osp_data_nascita
+entity_type: node
+bundle: ospite
+label: 'Data di nascita'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

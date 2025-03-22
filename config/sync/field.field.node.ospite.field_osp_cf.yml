@@ -1,0 +1,19 @@
+uuid: b2b39ba1-bbac-471e-ab75-866085a363a3
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_osp_cf
+    - node.type.ospite
+id: node.ospite.field_osp_cf
+field_name: field_osp_cf
+entity_type: node
+bundle: ospite
+label: 'Codice fiscale'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,111 @@
+<?php
+
+use Drupal\node\Entity\Node;
+
+
+function fokos_theme_suggestions_page_title_alter(array &$suggestions, array $variables) {
+    // Verifica se è una pagina nodo
+    if (\Drupal::routeMatch()->getRouteName() === 'entity.node.canonical') {
+      $node = \Drupal::routeMatch()->getParameter('node');
+  
+      // Assicurati che sia un oggetto nodo e controlla il tipo di contenuto
+      if ($node instanceof \Drupal\node\NodeInterface) {
+        $suggestions[] = 'page_title__node__' . $node->bundle();
+      }
+    }
+  }
+  
+// Nascondi TITLE / Vlidazione
+  function fokos_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+    // Array con tutti gli ID dei form dove nascondere il titolo
+    $forms_da_modificare = [
+        'node_ospite_form',
+        'node_ospite_edit_form',
+        'node_entrate_uscite_form',
+        'node_entrate_uscite_edit_form',
+    ];
+
+    // Se il form attuale è nell'array, nasconde il campo title
+    if (in_array($form_id, $forms_da_modificare, true)) {
+        $form['title']['#access'] = FALSE;
+    }
+
+    $forms_da_validare = [
+        'node_entrate_uscite_form',
+        'node_entrate_uscite_edit_form',
+    ];
+    if (in_array($form_id, $forms_da_modificare, true)) {
+        $form['#validate'][] = 'fokos_ospite_validazione';
+    }
+
+    
+}
+
+function fokos_node_presave(\Drupal\node\Entity\Node $node) {
+
+    // PRESAVE OSPITE
+    if ($node->isNew() && $node->bundle() === 'ospite') {
+        $nome = $node->get('field_osp_nome')->value;
+        $cognome = $node->get('field_osp_cognome')->value;
+        $timestamp = time(); // Oppure $node->getCreatedTime() se già impostato
+
+        // Genera un hash univoco
+        $hash = substr(hash('sha256', $nome . $cognome . $timestamp), 0, 12);
+
+        // Imposta il titolo
+        $node->setTitle($hash);
+    }
+    // PRESAVE ENTRATE / USCITE
+    else if ($node->isNew() && $node->bundle() === 'entrate_uscite') {
+        $ospite_id = $node->get('field_ref_ospite')->target_id;
+        $struttura_id = $node->get('field_ref_struttura')->target_id;
+
+        if ($ospite_id && $struttura_id) {
+
+            // Carica la struttura
+            $struttura = \Drupal\node\Entity\Node::load($struttura_id);
+            if ($struttura && $struttura->bundle() === 'struttura') {
+                // Recupera ospiti già associati
+                $ospiti_correnti = $struttura->get('field_refs_ospite')->getValue();
+                $ospiti_correnti[] = ['target_id' => $ospite_id];
+
+                // Aggiorna la struttura con il nuovo ospite
+                $struttura->set('field_refs_ospite', $ospiti_correnti);
+                $struttura->save();
+            }
+        }
+
+        // Imposta il titolo del nodo Entrate/Uscite
+        $data_in = $node->get('field_eo_data_in')->value;
+        $node->setTitle("OSP$ospite_id-STR$struttura_id-$data_in");
+    }
+}
+
+
+/**
+ * Funzione di validazione personalizzata.
+ */
+function fokos_ospite_validazione(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $ospite_id = $form_state->getValue(['field_ref_ospite', 0, 'target_id']);
+    
+    if ($ospite_id && fokos_ospite_gia_assegnato($ospite_id)) {
+        // Mostra un messaggio di errore e impedisce il salvataggio
+        //\Drupal::messenger()->addError("Errore: l'ospite è già assegnato a una struttura. Deve essere dimesso prima di essere riassegnato.");
+        $form_state->setErrorByName('field_ref_ospite', t('L’ospite selezionato è già assegnato a un’altra struttura.'));
+    }
+}
+
+
+/**
+ * Controlla se un ospite è già assegnato a una struttura attiva.
+ */
+function fokos_ospite_gia_assegnato($ospite_id) {
+    $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
+    $query->condition('type', 'struttura')
+        ->condition('field_refs_ospite', $ospite_id)
+        ->accessCheck(FALSE) // Evita restrizioni di permessi
+        ->range(0, 1); // Prende solo il primo risultato
+
+    $result = $query->execute();
+    return !empty($result); // Se c'è un risultato, significa che è già assegnato
+}

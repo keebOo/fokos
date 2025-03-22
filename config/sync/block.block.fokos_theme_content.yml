@@ -1,0 +1,22 @@
+uuid: 69914685-2e9c-427c-b534-ee6ad10bac30
+langcode: it
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - fokos_theme
+_core:
+  default_config_hash: hBHXB7hC05XU7pDYzETt-GUcpFlogK1gkjyAsg0Ym58
+id: fokos_theme_content
+theme: fokos_theme
+region: content
+weight: 0
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Contenuto della pagina principale'
+  label_display: '0'
+  provider: system
+visibility: {  }

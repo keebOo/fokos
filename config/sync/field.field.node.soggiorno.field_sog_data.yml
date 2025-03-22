@@ -1,0 +1,24 @@
+uuid: b8cb5de6-5a38-4f6a-a135-183985827449
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_sog_data
+    - node.type.soggiorno
+  module:
+    - datetime
+id: node.soggiorno.field_sog_data
+field_name: field_sog_data
+entity_type: node
+bundle: soggiorno
+label: Data
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    default_date_type: now
+    default_date: now
+default_value_callback: ''
+settings: {  }
+field_type: datetime

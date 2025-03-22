@@ -1,0 +1,22 @@
+uuid: e5e11ec1-ee04-4c58-9650-9e531ece93a1
+langcode: it
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - fokos_theme
+_core:
+  default_config_hash: 8nOAry2oKqJOr0zbrlJ3sZHDFJLIO6j-0vT0K_TYca4
+id: fokos_theme_help
+theme: fokos_theme
+region: header
+weight: 0
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Aiuto
+  label_display: '0'
+  provider: help
+visibility: {  }

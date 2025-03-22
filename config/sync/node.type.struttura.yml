@@ -1,0 +1,17 @@
+uuid: 81fc9ed4-3d5c-48b0-a38b-bf1fa91dd60e
+langcode: it
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Struttura
+type: struttura
+description: 'Struttura virtuale o fisica in cui inserire/dimettere gli ospiti.'
+help: null
+new_revision: false
+preview_mode: 0
+display_submitted: false

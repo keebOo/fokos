@@ -1,0 +1,22 @@
+uuid: 2294cbc0-5ff6-493a-8a1e-4160404f6d4e
+langcode: it
+status: true
+dependencies:
+  module:
+    - node
+id: ospite
+label: ospite
+type: 'canonical_entities:node'
+pattern: 'ospite/[node:title]'
+selection_criteria:
+  2664fb5d-b3f1-44a3-b651-a7e171b2df6f:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: 2664fb5d-b3f1-44a3-b651-a7e171b2df6f
+    context_mapping:
+      node: node
+    bundles:
+      ospite: ospite
+selection_logic: and
+weight: -5
+relationships: {  }

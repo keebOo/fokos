@@ -1,0 +1,11 @@
+uuid: c4d109e5-5c49-4bc2-959e-1cfa644aa93f
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.soggiorno
+id: node.soggiorno
+target_entity_type_id: node
+target_bundle: soggiorno
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,29 @@
+uuid: ee7fc84d-ed3a-42c1-b3a1-8d9dad5a5f7e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_ref_struttura
+    - node.type.struttura
+    - taxonomy.vocabulary.tariffe
+id: taxonomy_term.tariffe.field_ref_struttura
+field_name: field_ref_struttura
+entity_type: taxonomy_term
+bundle: tariffe
+label: Struttura
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      struttura: struttura
+    sort:
+      field: title
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

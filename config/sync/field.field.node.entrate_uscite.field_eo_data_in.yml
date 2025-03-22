@@ -1,0 +1,24 @@
+uuid: 87b01478-a1e0-4b04-96b0-fd1852b314a4
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_eo_data_in
+    - node.type.entrate_uscite
+  module:
+    - datetime
+id: node.entrate_uscite.field_eo_data_in
+field_name: field_eo_data_in
+entity_type: node
+bundle: entrate_uscite
+label: 'Data inserimento'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    default_date_type: now
+    default_date: now
+default_value_callback: ''
+settings: {  }
+field_type: datetime

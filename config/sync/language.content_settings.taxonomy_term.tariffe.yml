@@ -1,0 +1,11 @@
+uuid: ac0f955a-724c-45b1-bd79-2705f573e16a
+langcode: it
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.tariffe
+id: taxonomy_term.tariffe
+target_entity_type_id: taxonomy_term
+target_bundle: tariffe
+default_langcode: site_default
+language_alterable: false

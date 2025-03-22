@@ -1,0 +1,19 @@
+uuid: 2d81c82a-3139-4788-b1f2-4c2171bffa99
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_osp_cognome
+    - node.type.ospite
+id: node.ospite.field_osp_cognome
+field_name: field_osp_cognome
+entity_type: node
+bundle: ospite
+label: Cognome
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

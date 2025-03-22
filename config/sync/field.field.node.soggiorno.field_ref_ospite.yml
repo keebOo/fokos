@@ -1,0 +1,29 @@
+uuid: bfe98959-5c23-4321-be0c-62780d9fd5d6
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_ref_ospite
+    - node.type.ospite
+    - node.type.soggiorno
+id: node.soggiorno.field_ref_ospite
+field_name: field_ref_ospite
+entity_type: node
+bundle: soggiorno
+label: Ospite
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      ospite: ospite
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
