@@ -3,10 +3,11 @@ langcode: it
 status: true
 dependencies:
   config:
+    - field.field.node.soggiorno.field_ref_entrata_uscita
     - field.field.node.soggiorno.field_ref_ospite
     - field.field.node.soggiorno.field_ref_struttura
-    - field.field.node.soggiorno.field_ref_tariffa
     - field.field.node.soggiorno.field_sog_data
+    - field.field.node.soggiorno.field_sog_tariffa
     - node.type.soggiorno
   module:
     - datetime
@@ -16,6 +17,14 @@ targetEntityType: node
 bundle: soggiorno
 mode: default
 content:
+  field_ref_entrata_uscita:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 107
+    region: content
   field_ref_ospite:
     type: entity_reference_label
     label: above
@@ -32,14 +41,6 @@ content:
     third_party_settings: {  }
     weight: 101
     region: content
-  field_ref_tariffa:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 106
-    region: content
   field_sog_data:
     type: datetime_default
     label: above
@@ -48,6 +49,17 @@ content:
       format_type: medium
     third_party_settings: {  }
     weight: 105
+    region: content
+  field_sog_tariffa:
+    type: number_decimal
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 106
     region: content
   links:
     settings: {  }

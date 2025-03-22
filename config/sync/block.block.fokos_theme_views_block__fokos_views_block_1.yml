@@ -1,0 +1,33 @@
+uuid: 63b0c862-cbc8-4a8e-8d0e-caa6b0e0d589
+langcode: it
+status: true
+dependencies:
+  config:
+    - views.view.fokos_views
+  module:
+    - node
+    - views
+  theme:
+    - fokos_theme
+id: fokos_theme_views_block__fokos_views_block_1
+theme: fokos_theme
+region: content
+weight: 0
+provider: null
+plugin: 'views_block:fokos_views-block_1'
+settings:
+  id: 'views_block:fokos_views-block_1'
+  label: ''
+  label_display: visible
+  provider: views
+  context_mapping: {  }
+  views_label: ''
+  items_per_page: none
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+    bundles:
+      struttura: struttura

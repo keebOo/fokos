@@ -1,17 +1,17 @@
-uuid: 2292047e-860d-4026-ab49-2e8c37c43f93
+uuid: 59a888fb-a72d-426d-990b-be78d15a14d0
 langcode: it
 status: true
 dependencies:
   module:
-    - datetime
     - node
-id: node.field_sog_data
-field_name: field_sog_data
+id: node.field_sog_tariffa
+field_name: field_sog_tariffa
 entity_type: node
-type: datetime
+type: decimal
 settings:
-  datetime_type: date
-module: datetime
+  precision: 10
+  scale: 2
+module: core
 locked: false
 cardinality: 1
 translatable: true

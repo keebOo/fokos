@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.entrate_uscite.field_eo_data_out
     - field.field.node.entrate_uscite.field_ref_ospite
     - field.field.node.entrate_uscite.field_ref_struttura
+    - field.field.node.entrate_uscite.field_ref_tariffa
     - node.type.entrate_uscite
   module:
     - datetime
@@ -47,6 +48,16 @@ content:
   field_ref_struttura:
     type: entity_reference_autocomplete
     weight: 121
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_ref_tariffa:
+    type: entity_reference_autocomplete
+    weight: 126
     region: content
     settings:
       match_operator: CONTAINS

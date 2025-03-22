@@ -1,15 +1,15 @@
-uuid: ae2b4705-a7da-4b49-93dd-ed88275a0ca9
+uuid: c59e4307-b497-4074-b1b1-f83260d5ebab
 langcode: it
 status: true
 dependencies:
   config:
     - field.storage.node.field_ref_tariffa
-    - node.type.soggiorno
+    - node.type.entrate_uscite
     - taxonomy.vocabulary.tariffe
-id: node.soggiorno.field_ref_tariffa
+id: node.entrate_uscite.field_ref_tariffa
 field_name: field_ref_tariffa
 entity_type: node
-bundle: soggiorno
+bundle: entrate_uscite
 label: Tariffa
 description: ''
 required: false

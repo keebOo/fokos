@@ -2,99 +2,131 @@
 
 use Drupal\node\Entity\Node;
 
-
+/**
+ * Hook per alterare il suggerimento del titolo della pagina.
+ */
 function fokos_theme_suggestions_page_title_alter(array &$suggestions, array $variables) {
-    // Verifica se è una pagina nodo
     if (\Drupal::routeMatch()->getRouteName() === 'entity.node.canonical') {
-      $node = \Drupal::routeMatch()->getParameter('node');
-  
-      // Assicurati che sia un oggetto nodo e controlla il tipo di contenuto
-      if ($node instanceof \Drupal\node\NodeInterface) {
-        $suggestions[] = 'page_title__node__' . $node->bundle();
-      }
+        $node = \Drupal::routeMatch()->getParameter('node');
+        if ($node instanceof \Drupal\node\NodeInterface) {
+            $suggestions[] = 'page_title__node__' . $node->bundle();
+        }
     }
-  }
-  
-// Nascondi TITLE / Vlidazione
-  function fokos_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-    // Array con tutti gli ID dei form dove nascondere il titolo
-    $forms_da_modificare = [
-        'node_ospite_form',
-        'node_ospite_edit_form',
-        'node_entrate_uscite_form',
-        'node_entrate_uscite_edit_form',
-    ];
+}
 
-    // Se il form attuale è nell'array, nasconde il campo title
+/**
+ * Hook per nascondere il titolo nei form specifici e validare l'inserimento ospiti.
+ */
+function fokos_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+    $forms_da_modificare = [
+        'node_ospite_form', 'node_ospite_edit_form', 
+        'node_entrate_uscite_form', 'node_entrate_uscite_edit_form',
+        'node_soggiorno_form', 'node_soggiorno_edit_form',
+    ];
     if (in_array($form_id, $forms_da_modificare, true)) {
         $form['title']['#access'] = FALSE;
     }
-
-    $forms_da_validare = [
-        'node_entrate_uscite_form',
-        'node_entrate_uscite_edit_form',
-    ];
-    if (in_array($form_id, $forms_da_modificare, true)) {
+    
+    $forms_da_validare = ['node_entrate_uscite_form', 'node_entrate_uscite_edit_form'];
+    if (in_array($form_id, $forms_da_validare, true)) {
         $form['#validate'][] = 'fokos_ospite_validazione';
     }
-
-    
 }
-
-function fokos_node_presave(\Drupal\node\Entity\Node $node) {
-
-    // PRESAVE OSPITE
-    if ($node->isNew() && $node->bundle() === 'ospite') {
-        $nome = $node->get('field_osp_nome')->value;
-        $cognome = $node->get('field_osp_cognome')->value;
-        $timestamp = time(); // Oppure $node->getCreatedTime() se già impostato
-
-        // Genera un hash univoco
-        $hash = substr(hash('sha256', $nome . $cognome . $timestamp), 0, 12);
-
-        // Imposta il titolo
-        $node->setTitle($hash);
-    }
-    // PRESAVE ENTRATE / USCITE
-    else if ($node->isNew() && $node->bundle() === 'entrate_uscite') {
-        $ospite_id = $node->get('field_ref_ospite')->target_id;
-        $struttura_id = $node->get('field_ref_struttura')->target_id;
-
-        if ($ospite_id && $struttura_id) {
-
-            // Carica la struttura
-            $struttura = \Drupal\node\Entity\Node::load($struttura_id);
-            if ($struttura && $struttura->bundle() === 'struttura') {
-                // Recupera ospiti già associati
-                $ospiti_correnti = $struttura->get('field_refs_ospite')->getValue();
-                $ospiti_correnti[] = ['target_id' => $ospite_id];
-
-                // Aggiorna la struttura con il nuovo ospite
-                $struttura->set('field_refs_ospite', $ospiti_correnti);
-                $struttura->save();
-            }
-        }
-
-        // Imposta il titolo del nodo Entrate/Uscite
-        $data_in = $node->get('field_eo_data_in')->value;
-        $node->setTitle("OSP$ospite_id-STR$struttura_id-$data_in");
-    }
-}
-
 
 /**
- * Funzione di validazione personalizzata.
+ * Hook presave per personalizzare il comportamento prima del salvataggio del nodo.
+ */
+function fokos_node_presave(Node $node) {
+    if ($node->isNew()) {
+        switch ($node->bundle()) {
+            case 'ospite':
+                fokos_set_ospite_title($node);
+                break;
+            case 'entrate_uscite':
+                fokos_process_entrata_uscita($node);
+                break;
+        }
+    }
+}
+
+/**
+ * Genera e imposta il titolo per l'entità ospite.
+ */
+function fokos_set_ospite_title(Node $node) {
+    $nome = $node->get('field_osp_nome')->value;
+    $cognome = $node->get('field_osp_cognome')->value;
+    $timestamp = time();
+    $hash = substr(hash('sha256', $nome . $cognome . $timestamp), 0, 12);
+    $node->setTitle($hash);
+}
+
+/**
+ * Gestisce l'inserimento dell'ospite nella struttura e crea il primo record di soggiorno.
+ */
+function fokos_process_entrata_uscita(Node $node) {
+    $ospite_id = $node->get('field_ref_ospite')->target_id;
+    $struttura_id = $node->get('field_ref_struttura')->target_id;
+    $data_in = $node->get('field_eo_data_in')->value;
+    
+    if ($ospite_id && $struttura_id) {
+        fokos_aggiungi_ospite_a_struttura($struttura_id, $ospite_id);
+        fokos_crea_soggiorno_giornaliero($node, $data_in);
+    }
+    
+    $node->setTitle("OSP$ospite_id-STR$struttura_id-$data_in");
+}
+
+/**
+ * Aggiunge un ospite alla lista della struttura.
+ */
+function fokos_aggiungi_ospite_a_struttura($struttura_id, $ospite_id) {
+    $struttura = Node::load($struttura_id);
+    if ($struttura && $struttura->bundle() === 'struttura') {
+        $ospiti_correnti = $struttura->get('field_refs_ospite')->getValue();
+        $ospiti_correnti[] = ['target_id' => $ospite_id];
+        $struttura->set('field_refs_ospite', $ospiti_correnti);
+        $struttura->save();
+    }
+}
+
+/**
+ * Crea un nodo soggiorno per il giorno corrente.
+ */
+function fokos_crea_soggiorno_giornaliero(Node $entrata_uscita, $data_in) {
+
+    $tariffa_tid = $entrata_uscita->get('field_ref_tariffa')->target_id;  
+    if ($tariffa_tid) {  
+        $tariffa_term = \Drupal\taxonomy\Entity\Term::load($tariffa_tid);  
+        $tariffa_value = $tariffa_term ? $tariffa_term->get('field_tariffa_importo')->value : 0;  
+    }
+
+    $title = "Soggiorno OSP" . $entrata_uscita->get('field_ref_ospite')->target_id . 
+         " STR" . $entrata_uscita->get('field_ref_struttura')->target_id . 
+         " $data_in";
+
+    \Drupal::logger('custom_debug')->notice('Titolo generato: @title', ['@title' => $title]);
+
+    $soggiorno = Node::create([
+        'type' => 'soggiorno',
+        'title' => $title,
+        'field_sog_data' => $data_in,
+        'field_ref_entrata_uscita' => ['target_id' => $entrata_uscita->id()],
+        'field_ref_ospite' => ['target_id' => $entrata_uscita->get('field_ref_ospite')->target_id],
+        'field_ref_struttura' => ['target_id' => $entrata_uscita->get('field_ref_struttura')->target_id],
+        'field_sog_tariffa' => $tariffa_value,
+    ]);
+    $soggiorno->save();
+}
+
+/**
+ * Valida se l'ospite è già assegnato a una struttura.
  */
 function fokos_ospite_validazione(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
     $ospite_id = $form_state->getValue(['field_ref_ospite', 0, 'target_id']);
-    
     if ($ospite_id && fokos_ospite_gia_assegnato($ospite_id)) {
-        // Mostra un messaggio di errore e impedisce il salvataggio
-        //\Drupal::messenger()->addError("Errore: l'ospite è già assegnato a una struttura. Deve essere dimesso prima di essere riassegnato.");
         $form_state->setErrorByName('field_ref_ospite', t('L’ospite selezionato è già assegnato a un’altra struttura.'));
     }
 }
-
 
 /**
  * Controlla se un ospite è già assegnato a una struttura attiva.
@@ -103,9 +135,7 @@ function fokos_ospite_gia_assegnato($ospite_id) {
     $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
     $query->condition('type', 'struttura')
         ->condition('field_refs_ospite', $ospite_id)
-        ->accessCheck(FALSE) // Evita restrizioni di permessi
-        ->range(0, 1); // Prende solo il primo risultato
-
-    $result = $query->execute();
-    return !empty($result); // Se c'è un risultato, significa che è già assegnato
+        ->accessCheck(FALSE)
+        ->range(0, 1);
+    return !empty($query->execute());
 }

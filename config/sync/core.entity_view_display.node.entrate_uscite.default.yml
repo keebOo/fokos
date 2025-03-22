@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.entrate_uscite.field_eo_data_out
     - field.field.node.entrate_uscite.field_ref_ospite
     - field.field.node.entrate_uscite.field_ref_struttura
+    - field.field.node.entrate_uscite.field_ref_tariffa
     - node.type.entrate_uscite
   module:
     - datetime
@@ -38,7 +39,7 @@ content:
     type: entity_reference_label
     label: above
     settings:
-      link: true
+      link: false
     third_party_settings: {  }
     weight: 104
     region: content
@@ -49,6 +50,14 @@ content:
       link: true
     third_party_settings: {  }
     weight: 101
+    region: content
+  field_ref_tariffa:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 106
     region: content
   links:
     settings: {  }

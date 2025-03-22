@@ -1,4 +1,4 @@
-status: 1
+status: 0
 pattern: 'osp-[node:field_ref_ospite:target_id]-[node:nid]'
 escape: false
 preserve_titles: false
@@ -7,4 +7,4 @@ chunk: 50
 dependencies:
   config:
     - node.type.soggiorno
-new_content_behavior: 1
+new_content_behavior: 0

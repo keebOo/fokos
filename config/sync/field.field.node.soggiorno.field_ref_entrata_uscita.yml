@@ -1,0 +1,29 @@
+uuid: e5f35b32-96ac-47d7-9f17-465a8a6a0588
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_ref_entrata_uscita
+    - node.type.entrate_uscite
+    - node.type.soggiorno
+id: node.soggiorno.field_ref_entrata_uscita
+field_name: field_ref_entrata_uscita
+entity_type: node
+bundle: soggiorno
+label: 'Entrata / uscita'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      entrate_uscite: entrate_uscite
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

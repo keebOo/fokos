@@ -3,10 +3,11 @@ langcode: it
 status: true
 dependencies:
   config:
+    - field.field.node.soggiorno.field_ref_entrata_uscita
     - field.field.node.soggiorno.field_ref_ospite
     - field.field.node.soggiorno.field_ref_struttura
-    - field.field.node.soggiorno.field_ref_tariffa
     - field.field.node.soggiorno.field_sog_data
+    - field.field.node.soggiorno.field_sog_tariffa
     - node.type.soggiorno
   module:
     - datetime
@@ -21,6 +22,16 @@ content:
     weight: 10
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_ref_entrata_uscita:
+    type: entity_reference_autocomplete
+    weight: 127
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_ref_ospite:
     type: entity_reference_autocomplete
@@ -42,21 +53,18 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_ref_tariffa:
-    type: entity_reference_autocomplete
-    weight: 126
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   field_sog_data:
     type: datetime_default
     weight: 125
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_sog_tariffa:
+    type: number
+    weight: 126
+    region: content
+    settings:
+      placeholder: ''
     third_party_settings: {  }
   langcode:
     type: language_select

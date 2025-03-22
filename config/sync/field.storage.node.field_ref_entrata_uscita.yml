@@ -1,17 +1,16 @@
-uuid: 2292047e-860d-4026-ab49-2e8c37c43f93
+uuid: 5e8bd943-3c8c-4456-ba13-01d22b56b1d3
 langcode: it
 status: true
 dependencies:
   module:
-    - datetime
     - node
-id: node.field_sog_data
-field_name: field_sog_data
+id: node.field_ref_entrata_uscita
+field_name: field_ref_entrata_uscita
 entity_type: node
-type: datetime
+type: entity_reference
 settings:
-  datetime_type: date
-module: datetime
+  target_type: node
+module: core
 locked: false
 cardinality: 1
 translatable: true

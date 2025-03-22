@@ -11,20 +11,8 @@ id: node.struttura.default
 targetEntityType: node
 bundle: struttura
 mode: default
-content:
-  field_refs_ospite:
-    type: entity_reference_entity_view
-    label: above
-    settings:
-      view_mode: teaser
-      link: false
-    third_party_settings: {  }
-    weight: 101
-    region: content
-  links:
-    settings: {  }
-    third_party_settings: {  }
-    weight: 100
-    region: content
+content: {  }
 hidden:
+  field_refs_ospite: true
   langcode: true
+  links: true
