@@ -202,4 +202,34 @@ class SoggiornoService {
             $this->logger->debug('Nascosto campo titolo per form soggiorno: @form_id', ['@form_id' => $form_id]);
         }
     }
+
+    /**
+     * Elimina tutti i soggiorni associati a un'entrata/uscita.
+     * 
+     * @param NodeInterface $entrata_uscita L'entrata/uscita di cui eliminare i soggiorni
+     * @return int Il numero di soggiorni eliminati
+     */
+    public function eliminaSoggiorniPerEntrataUscita(NodeInterface $entrata_uscita): int {
+        if ($entrata_uscita->bundle() !== 'entrate_uscite') {
+            $this->logger->warning('Tentativo di eliminare soggiorni per un nodo non valido.');
+            return 0;
+        }
+
+        $query = $this->entityTypeManager->getStorage('node')->getQuery()
+            ->condition('type', 'soggiorno')
+            ->condition('field_ref_entrata_uscita', $entrata_uscita->id())
+            ->accessCheck(FALSE);
+        
+        $soggiorni_ids = $query->execute();
+        
+        if (!empty($soggiorni_ids)) {
+            $soggiorni = $this->entityTypeManager->getStorage('node')->loadMultiple($soggiorni_ids);
+            foreach ($soggiorni as $soggiorno) {
+                $soggiorno->delete();
+                $this->logger->notice('Eliminato soggiorno: @id', ['@id' => $soggiorno->id()]);
+            }
+        }
+
+        return count($soggiorni_ids);
+    }
 } 

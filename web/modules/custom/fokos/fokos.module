@@ -101,3 +101,18 @@ function fokos_entity_presave(EntityInterface $entity) {
     }
 }
 
+/**
+ * Implements hook_entity_predelete().
+ */
+function fokos_entity_predelete(EntityInterface $entity) {
+    if ($entity instanceof NodeInterface && $entity->bundle() === 'entrate_uscite') {
+        /** @var \Drupal\fokos\Service\SoggiornoService $soggiornoService */
+        $soggiornoService = \Drupal::service('fokos.soggiorno_service');
+        $num_deleted = $soggiornoService->eliminaSoggiorniPerEntrataUscita($entity);
+        \Drupal::logger('fokos')->notice('Eliminati @num soggiorni per entrata/uscita @id', [
+            '@num' => $num_deleted,
+            '@id' => $entity->id()
+        ]);
+    }
+}
+
