@@ -13,8 +13,8 @@ dependencies:
   module:
     - datetime
     - node
-    - rest
     - user
+    - views_table_cs_download_csv
 id: fokos_views
 label: 'Fokos views'
 module: views
@@ -225,10 +225,10 @@ display:
             next: ››
             previous: ‹‹
           expose:
-            items_per_page: false
+            items_per_page: true
             items_per_page_label: 'Voci per pagina'
             items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
+            items_per_page_options_all: true
             items_per_page_options_all_label: '- Tutto -'
             offset: false
             offset_label: Scostamento
@@ -500,6 +500,7 @@ display:
         arguments: false
         filters: false
         filter_groups: false
+        header: false
       relationships:
         reverse__node__field_refs_ospite:
           id: reverse__node__field_refs_ospite
@@ -512,6 +513,16 @@ display:
           plugin_id: entity_reverse
           required: true
       display_description: ''
+      header:
+        views_table_cs_download_csv_button:
+          id: views_table_cs_download_csv_button
+          table: views
+          field: views_table_cs_download_csv_button
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: views_table_cs_download_csv_button
+          empty: false
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -907,6 +918,7 @@ display:
         arguments: false
         filters: false
         filter_groups: false
+        header: false
       relationships:
         field_ref_entrata_uscita:
           id: field_ref_entrata_uscita
@@ -918,6 +930,16 @@ display:
           plugin_id: standard
           required: true
       display_description: ''
+      header:
+        views_table_cs_download_csv_button:
+          id: views_table_cs_download_csv_button
+          table: views
+          field: views_table_cs_download_csv_button
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: views_table_cs_download_csv_button
+          empty: false
       display_extenders: {  }
     cache_metadata:
       max-age: -1

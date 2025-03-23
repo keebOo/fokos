@@ -31,7 +31,7 @@ function fokos_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_sta
     
     $forms_da_validare = ['node_entrate_uscite_form'];
     if (in_array($form_id, $forms_da_validare, true)) {
-        $form['#validate'][] = 'fokos_ospite_validazione';
+        $form['#validate'][] = 'validazione_ospite';
     }
 
     // Non editabili in fase di update
@@ -49,10 +49,10 @@ function fokos_node_presave(Node $node) {
     if ($node->isNew()) {
         switch ($node->bundle()) {
             case 'ospite':
-                fokos_set_ospite_title($node);
+                set_ospite_title($node);
                 break;
             case 'entrate_uscite':
-                fokos_process_entrata_uscita($node);
+                process_entrata_uscita($node);
                 break;
         }
     }
@@ -61,7 +61,7 @@ function fokos_node_presave(Node $node) {
 /**
  * Genera e imposta il titolo per l'entità ospite.
  */
-function fokos_set_ospite_title(Node $node) {
+function set_ospite_title(Node $node) {
     $nome = $node->get('field_osp_nome')->value;
     $cognome = $node->get('field_osp_cognome')->value;
     $timestamp = time();
@@ -72,14 +72,18 @@ function fokos_set_ospite_title(Node $node) {
 /**
  * Gestisce l'inserimento dell'ospite nella struttura e crea il primo record di soggiorno.
  */
-function fokos_process_entrata_uscita(Node $node) {
+function process_entrata_uscita(Node $node) {
     $ospite_id = $node->get('field_ref_ospite')->target_id;
     $struttura_id = $node->get('field_ref_struttura')->target_id;
     $data_in = $node->get('field_eo_data_in')->value;
     
     if ($ospite_id && $struttura_id) {
-        fokos_aggiungi_ospite_a_struttura($struttura_id, $ospite_id);
-        fokos_crea_soggiorno_giornaliero($node, $data_in);
+        aggiungi_ospite_a_struttura($struttura_id, $ospite_id);
+
+        // Controllo se la data di entrata è uguale ad oggi (altrimenti se ne occupa la funzione di update)
+        if ($data_in === date('Y-m-d')) {
+            crea_soggiorno_giornaliero($node, $data_in);
+        }
     }
     
     $node->setTitle("Entrata/Uscita OSP$ospite_id STR$struttura_id $data_in");
@@ -88,7 +92,7 @@ function fokos_process_entrata_uscita(Node $node) {
 /**
  * Aggiunge un ospite alla lista della struttura.
  */
-function fokos_aggiungi_ospite_a_struttura($struttura_id, $ospite_id) {
+function aggiungi_ospite_a_struttura($struttura_id, $ospite_id) {
     $struttura = Node::load($struttura_id);
     if ($struttura && $struttura->bundle() === 'struttura') {
         $ospiti_correnti = $struttura->get('field_refs_ospite')->getValue();
@@ -101,7 +105,7 @@ function fokos_aggiungi_ospite_a_struttura($struttura_id, $ospite_id) {
 /**
  * Crea un nodo soggiorno per il giorno corrente.
  */
-function fokos_crea_soggiorno_giornaliero(Node $entrata_uscita, $data_in) {
+function crea_soggiorno_giornaliero(Node $entrata_uscita, $data_in) {
 
     $tariffa_tid = $entrata_uscita->get('field_ref_tariffa')->target_id;  
     if ($tariffa_tid) {  
@@ -130,9 +134,9 @@ function fokos_crea_soggiorno_giornaliero(Node $entrata_uscita, $data_in) {
 /**
  * Valida se l'ospite è già assegnato a una struttura.
  */
-function fokos_ospite_validazione(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+function validazione_ospite(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
     $ospite_id = $form_state->getValue(['field_ref_ospite', 0, 'target_id']);
-    if ($ospite_id && fokos_ospite_gia_assegnato($ospite_id)) {
+    if ($ospite_id && is_ospite_gia_assegnato($ospite_id)) {
         $form_state->setErrorByName('field_ref_ospite', t('L’ospite selezionato è già assegnato a un’altra struttura.'));
     }
 }
@@ -140,7 +144,7 @@ function fokos_ospite_validazione(&$form, \Drupal\Core\Form\FormStateInterface $
 /**
  * Controlla se un ospite è già assegnato a una struttura attiva.
  */
-function fokos_ospite_gia_assegnato($ospite_id) {
+function is_ospite_gia_assegnato($ospite_id) {
     $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
     $query->condition('type', 'struttura')
         ->condition('field_refs_ospite', $ospite_id)
@@ -208,7 +212,7 @@ function genera_soggiorni(Node $entrata_uscita) {
 
         if (empty($soggiorni)) {
             // Crea il nodo soggiorno se non esiste
-            fokos_crea_soggiorno_giornaliero($entrata_uscita, $giorno);
+            crea_soggiorno_giornaliero($entrata_uscita, $giorno);
             \Drupal::logger('fokos')->notice("Creato nodo soggiorno per il giorno $giorno, entrata_uscita: " . $entrata_uscita->id());
         }
     }
@@ -275,12 +279,12 @@ function sincronizza_soggiorni($entrata_uscita, $old_data_in, $old_data_out, $ne
     // Caso 2: Se l'intervallo si è allungato → Aggiungere soggiorni mancanti
     if ($new_data_in < $old_data_in) {
         for ($date = clone $new_data_in; $date < $old_data_in; $date->modify('+1 day')) {
-            fokos_crea_soggiorno_giornaliero($entrata_uscita, $date->format('Y-m-d'));
+            crea_soggiorno_giornaliero($entrata_uscita, $date->format('Y-m-d'));
         }
     }
     if ($new_data_out > $old_data_out) {
         for ($date = clone $old_data_out; $date < $new_data_out; $date->modify('+1 day')) {
-            fokos_crea_soggiorno_giornaliero($entrata_uscita, $date->format('Y-m-d'));
+            crea_soggiorno_giornaliero($entrata_uscita, $date->format('Y-m-d'));
         }
     }
 }

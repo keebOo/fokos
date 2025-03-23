@@ -1,0 +1,12 @@
+name: 'Views Table Client-Side Download (CSV)'
+description: 'Provides a button to download supported views table plugin style as csv.'
+type: module
+package: Views
+core_version_requirement: ^9 || ^10 || ^11
+dependencies:
+  - drupal:views
+
+# Information added by Drupal.org packaging script on 2024-03-09
+version: '1.0.0'
+project: 'views_table_cs_download_csv'
+datestamp: 1709950901

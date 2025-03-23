@@ -24,8 +24,10 @@
         "drupal/gin": "^4.0",
         "drupal/gin_toolbar": "^2.0",
         "drupal/pathauto": "^1.13",
+        "drupal/twig_field_value": "^2.0",
         "drupal/twig_tweak": "^3.4",
         "drupal/views_data_export": "^1.5",
+        "drupal/views_table_cs_download_csv": "^1.0",
         "drush/drush": "^13.4"
     },
     "conflict": {

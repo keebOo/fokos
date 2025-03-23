@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * @file
+ * Implement hooks and other logic related to views_table_cs_download_csv.
+ */
+
+use Drupal\Component\Serialization\Json;
+use Drupal\views_table_cs_download_csv\Plugin\views\area\Button;
+
+/**
+ * Implements hook_theme().
+ */
+function views_table_cs_download_csv_theme($existing, $type, $theme, $path) {
+  return [
+    'views_table_cs_download_csv_button' => [
+      'variables' => [
+        'view_id' => '',
+        'display_id' => '',
+        'filename' => '',
+      ],
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for views_table_cs_download_csv_button templates.
+ *
+ * Default template: views-table-cs-download-csv-button.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - view_id: The view id this button was added to.
+ *   - display_id: The view display id this button was added to.
+ *   - filename: The view display id this button was added to.
+ */
+function template_preprocess_views_table_cs_download_csv_button(array &$variables) {
+  $variables['button'] = [];
+  if (empty($variables['view_id']) || empty($variables['display_id'])) {
+    return;
+  }
+
+  $variables['button'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'button',
+    '#value' => t('Download CSV'),
+    '#attributes' => [
+      'data-views-table-client-side-download-csv-button' => Json::encode([
+        'view_id' => $variables['view_id'],
+        'display_id' => $variables['display_id'],
+        'filename' => $variables['filename'],
+        'targetTable' => _views_table_cs_download_csv_generate_target_table_attribute_identifier($variables['view_id'], $variables['display_id']),
+      ]),
+    ],
+    '#attached' => [
+      'library' => ['views_table_cs_download_csv/initiator'],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views_view_table.
+ */
+function views_table_cs_download_csv_preprocess_views_view_table(&$variables) {
+  _views_table_cs_download_csv_preprocess_views_table_styles($variables);
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views_flipped_table.
+ */
+function views_table_cs_download_csv_preprocess_views_view_flipped_table(&$variables) {
+  _views_table_cs_download_csv_preprocess_views_table_styles($variables);
+}
+
+/**
+ * Helper to preprocess views that have supported table styles.
+ *
+ * @param array $variables
+ *   The templates variables.
+ *
+ * @return void
+ *   The modified variables.
+ */
+function _views_table_cs_download_csv_preprocess_views_table_styles(array &$variables): void {
+  /** @var \Drupal\views\ViewExecutable $view */
+  $view = $variables['view'] ?? NULL;
+  $display = $view?->getDisplay();
+  if (!$display) {
+    return;
+  }
+
+  // Check if the view where this table style is being used has the button
+  // added.
+  $has_download_button = FALSE;
+  foreach (['header', 'footer'] as $area) {
+    foreach ($display->getHandlers($area) as $handler) {
+      if ($handler instanceof Button) {
+        $has_download_button = TRUE;
+        break;
+      }
+    }
+    if ($has_download_button) {
+      break;
+    }
+  }
+
+  // If the button is added, setting a data attribute to be used with the JS.
+  if ($has_download_button) {
+    $variables['attributes']['data-views-table-client-side-download-csv-target-table'] = _views_table_cs_download_csv_generate_target_table_attribute_identifier($view->id(), $view->current_display);
+  }
+}
+
+/**
+ * Generates targeted table attribute identifier.
+ *
+ * @param string $view_id
+ *   The view id.
+ * @param string $display_id
+ *   The view display id.
+ *
+ * @return string
+ *   The generated string.
+ */
+function _views_table_cs_download_csv_generate_target_table_attribute_identifier(string $view_id, string $display_id): string {
+  return "{$view_id}--{$display_id}";
+}

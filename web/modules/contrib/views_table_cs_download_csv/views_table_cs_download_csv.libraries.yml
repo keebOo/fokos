@@ -1,0 +1,7 @@
+initiator:
+  version: VERSION
+  js:
+    js/initiator.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
