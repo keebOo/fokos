@@ -1,0 +1,16 @@
+services:
+  fokos.ospiti_service:
+    class: Drupal\fokos\Service\OspitiService
+    arguments: ['@entity_type.manager', '@logger.factory']
+
+  fokos.soggiorno_service:
+    class: Drupal\fokos\Service\SoggiornoService
+    arguments: ['@entity_type.manager', '@logger.factory']
+
+  fokos.entrate_uscite_service:
+    class: Drupal\fokos\Service\EntrateUsciteService
+    arguments: 
+      - '@entity_type.manager'
+      - '@logger.factory'
+      - '@fokos.ospiti_service'
+      - '@fokos.soggiorno_service' 
