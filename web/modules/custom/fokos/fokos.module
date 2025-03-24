@@ -124,4 +124,13 @@ function fokos_entity_predelete(EntityInterface $entity) {
     }
 }
 
+/**
+ * Implements hook_views_pre_render().
+ */
+function fokos_views_pre_render(\Drupal\views\ViewExecutable $view) {
+  if ($view->id() === 'fokos_views' && $view->current_display === 'block_1') {
+    $view->element['#attached']['library'][] = 'fokos/dimissioni';
+  }
+}
+
 

@@ -4,3 +4,4 @@ dimissioni:
   dependencies:
     - core/drupal
     - core/drupalSettings
+    - core/once

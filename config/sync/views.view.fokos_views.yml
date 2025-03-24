@@ -680,7 +680,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a href="/admin/fokos/dimetti-ospite/{{ nid_1 }}/{{ nid }}"  >Dimetti</a>'
+            text: '<a href="/admin/fokos/dimetti-ospite/{{ nid_1 }}/{{ nid }}" class="fokos-dimissioni-link">Dimetti</a>'
             make_link: false
             path: ''
             absolute: false
