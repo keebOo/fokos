@@ -7,11 +7,17 @@ use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DimissioniController extends ControllerBase {
 
-  public function dimettiOspite($ospite_id, $struttura_id) {
+  public function dimettiOspite($ospite_id, $struttura_id, $token) {
     try {
+      $ospite = Node::load($ospite_id);
+      if (!$ospite || $ospite->get('field_token_dimissioni')->value !== $token) {
+        throw new AccessDeniedHttpException('Token diissioni non valido');
+      }
+      
       // 1. Carica il nodo entrata_uscita associato
       $query = \Drupal::entityQuery('node')
         ->condition('type', 'entrate_uscite')
@@ -38,6 +44,10 @@ class DimissioniController extends ControllerBase {
           $struttura->set('field_refs_ospite', $ospiti);
           $struttura->save();
         }
+        
+        // Pulisci il token dopo la dimissione
+        $ospite->set('field_token_dimissioni', '');
+        $ospite->save();
         
         $this->messenger()->addStatus($this->t('Ospite dimesso con successo.'));
       } else {

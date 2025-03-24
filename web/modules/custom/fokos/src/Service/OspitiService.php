@@ -89,6 +89,24 @@ class OspitiService {
         $struttura->set('field_refs_ospite', $ospiti_correnti);
         $struttura->save();
         
+        // Genera e salva il token di dimissione
+        try {
+            $ospite = $this->entityTypeManager->getStorage('node')->load($ospiteId);
+            if ($ospite) {
+                $token = substr(hash('sha256', $ospiteId . $strutturaId . time()), 0, 32);
+                $ospite->set('field_token_dimissioni', $token);
+                $ospite->save();
+                
+                $this->logger->notice('Token di dimissione generato per ospite @ospite', [
+                    '@ospite' => $ospiteId
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Errore durante la generazione del token di dimissione: @error', [
+                '@error' => $e->getMessage()
+            ]);
+        }
+        
         $this->logger->notice('Ospite @ospite aggiunto alla struttura @struttura', [
             '@ospite' => $ospiteId,
             '@struttura' => $strutturaId

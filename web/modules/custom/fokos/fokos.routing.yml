@@ -1,5 +1,5 @@
 fokos.dimetti_ospite:
-  path: '/admin/fokos/dimetti-ospite/{ospite_id}/{struttura_id}'
+  path: '/admin/fokos/dimetti-ospite/{ospite_id}/{struttura_id}/{token}'
   defaults:
     _controller: '\Drupal\fokos\Controller\DimissioniController::dimettiOspite'
   requirements:
@@ -9,4 +9,6 @@ fokos.dimetti_ospite:
       ospite_id:
         type: string
       struttura_id:
+        type: string
+      token:
         type: string 
