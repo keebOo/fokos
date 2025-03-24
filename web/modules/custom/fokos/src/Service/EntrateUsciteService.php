@@ -9,6 +9,20 @@ use Drupal\node\NodeInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
+/**
+ * Service per la gestione delle entrate e uscite degli ospiti.
+ *
+ * Gestisce il flusso di entrata/uscita degli ospiti nelle strutture.
+ *
+ * Questo service gestisce:
+ * - Processamento delle nuove entrate degli ospiti nelle strutture
+ * - Validazione delle date di entrata e uscita
+ * - Gestione dei form di entrata/uscita (disabilitazione campi in modifica)
+ * - Verifica che l'ospite non sia già assegnato ad altre strutture
+ * - Coordinamento con OspitiService per l'assegnazione alle strutture
+ * - Coordinamento con SoggiornoService per la creazione dei soggiorni
+ * - Generazione automatica dei titoli per le entrate/uscite
+ */
 class EntrateUsciteService {
     protected $entityTypeManager;
     protected $logger;

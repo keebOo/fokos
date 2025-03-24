@@ -32,3 +32,6 @@ web/cookie.txt
 
 installer_mac.sh
 
+.cursor
+.cursor/rules
+*.mdc

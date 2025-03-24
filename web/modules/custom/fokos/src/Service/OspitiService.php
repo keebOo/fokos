@@ -7,6 +7,19 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Service per la gestione degli ospiti.
+ *
+ * Gestisce le operazioni relative agli ospiti e la loro assegnazione alle strutture.
+ *
+ * Questo service gestisce:
+ * - Generazione e gestione dei titoli degli ospiti (hash univoco)
+ * - Verifica dello stato di assegnazione degli ospiti alle strutture
+ * - Aggiunta degli ospiti alle strutture
+ * - Gestione dei form degli ospiti (nascondere campi non necessari)
+ * - Logging delle operazioni relative agli ospiti
+ * - Validazione delle operazioni di assegnazione
+ */
 class OspitiService {
     protected $entityTypeManager;
     protected $logger;

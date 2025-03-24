@@ -11,6 +11,20 @@ use DatePeriod;
 use DateInterval;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Service per la gestione dei soggiorni.
+ *
+ * Gestisce la creazione e sincronizzazione dei soggiorni degli ospiti.
+ *
+ * Questo service gestisce:
+ * - Creazione di soggiorni giornalieri per le nuove entrate
+ * - Generazione automatica dei soggiorni per periodi passati
+ * - Sincronizzazione dei soggiorni quando vengono modificate le date
+ * - Eliminazione dei soggiorni non più validi
+ * - Gestione dei form dei soggiorni (nascondere campi non necessari)
+ * - Calcolo e applicazione delle tariffe ai soggiorni
+ * - Gestione del titolo automatico dei soggiorni
+ */
 class SoggiornoService {
     protected $entityTypeManager;
     protected $logger;
