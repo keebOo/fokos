@@ -60,9 +60,17 @@ function fokos_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_sta
  */
 function fokos_entity_insert(EntityInterface $entity) {
     if ($entity instanceof NodeInterface && $entity->bundle() === 'entrate_uscite') {
+        $data_in = $entity->get('field_eo_data_in')->value;
         /** @var \Drupal\fokos\Service\SoggiornoService $soggiornoService */
         $soggiornoService = \Drupal::service('fokos.soggiorno_service');
-        $soggiornoService->generaSoggiorni($entity);
+
+        if ($data_in === date('Y-m-d')) {
+            // Se la data è oggi, crea solo il soggiorno giornaliero
+            $soggiornoService->creaSoggiornoGiornaliero($entity, $data_in);
+        } else {
+            // Altrimenti genera tutti i soggiorni necessari
+            $soggiornoService->generaSoggiorni($entity);
+        }
     }
 }
 
@@ -115,4 +123,5 @@ function fokos_entity_predelete(EntityInterface $entity) {
         ]);
     }
 }
+
 

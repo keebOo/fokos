@@ -146,14 +146,6 @@ class EntrateUsciteService {
         
         if ($ospite_id && $struttura_id) {
             $this->ospitiService->aggiungiOspiteAStruttura($struttura_id, $ospite_id);
-
-            // Se la data di entrata è oggi, crea solo il soggiorno per oggi
-            if ($data_in === date('Y-m-d')) {
-                $this->soggiornoService->creaSoggiornoGiornaliero($node, $data_in);
-            } else {
-                // Se la data è nel passato, genera tutti i soggiorni necessari
-                $this->soggiornoService->generaSoggiorni($node);
-            }
         }
         
         $node->setTitle("Entrata/Uscita OSP$ospite_id STR$struttura_id $data_in");

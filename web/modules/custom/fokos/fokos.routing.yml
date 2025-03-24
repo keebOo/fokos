@@ -1,0 +1,12 @@
+fokos.dimetti_ospite:
+  path: '/admin/fokos/dimetti-ospite/{ospite_id}/{struttura_id}'
+  defaults:
+    _controller: '\Drupal\fokos\Controller\DimissioniController::dimettiOspite'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      ospite_id:
+        type: string
+      struttura_id:
+        type: string 

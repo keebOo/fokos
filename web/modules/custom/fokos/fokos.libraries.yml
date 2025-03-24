@@ -1,0 +1,6 @@
+dimissioni:
+  js:
+    js/dimissioni.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings

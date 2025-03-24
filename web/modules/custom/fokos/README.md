@@ -147,3 +147,30 @@ Gestisce la creazione e sincronizzazione dei soggiorni.
 - Verificare la validazione delle date
 - Testare la generazione automatica dei soggiorni
 - Controllare l'unicità delle assegnazioni ospiti
+
+
+
+### TODO
+
+``` 
+   /**
+   * Aggiorna i riferimenti mancanti nei soggiorni.
+   */
+   public function aggiornaSoggiorniSenzaRiferimento(NodeInterface $entrata_uscita): void {
+      $query = $this->entityTypeManager->getStorage('node')->getQuery()
+         ->condition('type', 'soggiorno')
+         ->condition('field_ref_ospite', $entrata_uscita->get('field_ref_ospite')->target_id)
+         ->condition('field_ref_struttura', $entrata_uscita->get('field_ref_struttura')->target_id)
+         ->condition('field_ref_entrata_uscita', NULL, 'IS NULL')
+         ->accessCheck(FALSE);
+      
+      $soggiorni_ids = $query->execute();
+      if (!empty($soggiorni_ids)) {
+         $soggiorni = $this->entityTypeManager->getStorage('node')->loadMultiple($soggiorni_ids);
+         foreach ($soggiorni as $soggiorno) {
+               $soggiorno->set('field_ref_entrata_uscita', $entrata_uscita);
+               $soggiorno->save();
+         }
+      }
+   }
+```
